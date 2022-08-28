@@ -24,15 +24,19 @@ export const EVENTS_TYPES: Array<string> = [
   "keyup",
   "submit",
   "change",
-  "input"
+  "input",
 ];
 
 export default function track(params: TrackParams): Observable<Event> {
-  const { targetSelector, eventType } = params;
+  let { targetSelector, eventType } = params;
 
   if (eventType && !EVENTS_TYPES.includes(eventType)) {
     console.log("Такое событие не поддерживается");
     return;
+  }
+
+  if (!eventType) {
+    eventType = "click";
   }
 
   const observable = new Observable((subscriber) => {
@@ -50,13 +54,13 @@ export default function track(params: TrackParams): Observable<Event> {
 
 const observer = track({
   targetSelector: "button",
-  eventType: "click"
+  eventType: "click",
 });
 
 if (observer) {
   observer.subscribe({
     next(callback) {
       callback(() => console.log("ураа"));
-    }
+    },
   });
 }
