@@ -24,24 +24,27 @@ export const EVENTS_TYPES: Array<string> = [
   "keyup",
   "submit",
   "change",
-  "input"
+  "input",
 ];
 
 export default function track(params: TrackParams): Observable<Event> {
-  const { targetSelector, eventType } = params;
+  let { targetSelector, eventType = "click" } = params;
 
   if (eventType && !EVENTS_TYPES.includes(eventType)) {
-    console.log("Такое событие не поддерживается");
-    return;
+    eventType = "click";
   }
 
   const observable = new Observable((subscriber) => {
     subscriber.next((callback) =>
-      document.addEventListener(eventType, (event) => {
-        if (event.target.className === targetSelector) {
-          callback();
-        }
-      })
+      document.addEventListener(
+        eventType,
+        (event) => {
+          if (event.target.closest(targetSelector)) {
+            callback();
+          }
+        },
+        true
+      )
     );
   });
 
@@ -50,13 +53,13 @@ export default function track(params: TrackParams): Observable<Event> {
 
 const observer = track({
   targetSelector: "button",
-  eventType: "click"
+  eventType: "click",
 });
 
 if (observer) {
   observer.subscribe({
     next(callback) {
       callback(() => console.log("ураа"));
-    }
+    },
   });
 }
