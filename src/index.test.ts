@@ -2,13 +2,13 @@ import track from ".";
 
 describe("Test track", () => {
   describe("track params", () => {
-    it("track doesnt call with wrong eventType", () => {
+    it("track calls if eventType is wrong with click event", () => {
       const observer = track({
         targetSelector: "button",
         eventType: "gdf",
       });
 
-      expect(observer).toBe(undefined);
+      expect(observer).toBeTruthy());
     });
 
     it("default eventType 'click' if it not passed", () => {
