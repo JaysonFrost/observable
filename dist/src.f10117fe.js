@@ -7108,24 +7108,20 @@ exports.EVENTS_TYPES = ["resize", "focusin", "focusout", "click", "dblclick", "m
 
 function track(params) {
   var targetSelector = params.targetSelector,
-      eventType = params.eventType;
+      _a = params.eventType,
+      eventType = _a === void 0 ? "click" : _a;
 
   if (eventType && !exports.EVENTS_TYPES.includes(eventType)) {
-    console.log("Такое событие не поддерживается");
-    return;
-  }
-
-  if (!eventType) {
     eventType = "click";
   }
 
   var observable = new rxjs_1.Observable(function (subscriber) {
     subscriber.next(function (callback) {
       return document.addEventListener(eventType, function (event) {
-        if (event.target.className === targetSelector) {
+        if (event.target.closest(targetSelector)) {
           callback();
         }
-      });
+      }, true);
     });
   });
   return observable;
